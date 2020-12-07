@@ -89,7 +89,7 @@ def DisplayandSolve():
 
            
             #立体校正
-            map1x, map1y, map2x, map2y, Q= stereomoulds.getRectifyTransform(height, width, camerasconfig)  # 获取用于畸变校正和立体校正的映射矩阵以及用于计算像素空间坐标的重投影矩阵
+            map1x, map1y, map2x, map2y, Q= stereomoulds.getRectifyTransform(height, width, camerasconfig)  # 获取畸变校正和立体校正的映射矩阵以及用于计算像素空间坐标的重投影矩阵
             iml_rectified, imr_rectified = stereomoulds.rectifyImage(iml, imr, map1x, map1y, map2x, map2y)
             #立体匹配
             iml_, imr_ = stereomoulds.preprocess(iml_rectified, imr_rectified)
