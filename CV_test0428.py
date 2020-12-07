@@ -1,5 +1,5 @@
 '''
-主要的机器视觉模块，实现：识别、跟踪、立体重建、世界坐标输出
+机器视觉模块（一），实现：识别、跟踪
 '''
 from __future__ import print_function
 
@@ -28,17 +28,17 @@ def Receive():
     print("Start Reveive")
     #cap = cv2.VideoCapture("rtsp://admin:admin_123@172.0.0.0") #网络摄像头(海康、大华等)读取
     capl = cv2.VideoCapture(0) #本地默认摄像头
-    capr = cv2.VideoCapture(0)
+    #capr = cv2.VideoCapture(0)
     #cap = cv2.VideoCapture("D:/") #读取视频文件
     retl, framel = capl.read()
-    retr, framer = capr.read()
+    #retr, framer = capr.read()
     ql.put(framel)
-    qr.put(framer)
+    #qr.put(framer)
     while retl:
-        retl, framel = calp.read()
-        retr, framer = capr.read()
+        retl, framel = capl.read()
+       # retr, framer = capr.read()
         ql.put(framel)
-        qr.put(framer)
+        #qr.put(framer)
  
  
 def DisplayandSolve():
@@ -52,24 +52,25 @@ def DisplayandSolve():
      camerasconfig=cameraconfig.stereoCamera()
 
      while True:
-         if q.empty() !=True:
+         if ql.empty() !=True:
             framel=ql.get()
-            framer=qr.get()
+            #framer=qr.get()
             #读取照片参数
-            height, width = framel.shape[0:2]
+            #if (len(framel)!=0):
+            #    height, width = framel.shape[0:2]
             #以下开始处理图片
-
+            
             #立体校正
-            map1x, map1y, map2x, map2y, Q= stereomoulds.getRectifyTransform(height, width, camerasconfig)  # 获取用于畸变校正和立体校正的映射矩阵以及用于计算像素空间坐标的重投影矩阵
-            iml_rectified, imr_rectified = stereomoulds.rectifyImage(framel, framer, map1x, map1y, map2x, map2y)
-
+            #map1x, map1y, map2x, map2y, Q= stereomoulds.getRectifyTransform(height, width, camerasconfig)  # 获取用于畸变校正和立体校正的映射矩阵以及用于计算像素空间坐标的重投影矩阵
+            #iml_rectified, imr_rectified = stereomoulds.rectifyImage(framel, framer, map1x, map1y, map2x, map2y)
+            
             detections=detector.detect(framel)
             objtracks=list()
             show=None
             if (len(detections) == 0):
-                show = frame
+                show = framel
             else:
-                show = frame
+                show = framel
                 edges = np.array([[0, 1],
                                   [1, 2],
                                   [2, 3],
@@ -81,13 +82,13 @@ def DisplayandSolve():
                     objtracks.append(obj)
                     for j in range(4):
                          cv2.line(show,tuple(point[edges[j,0]]),tuple(point[edges[j,1]]),(0,0,255),2)
-                    #print ('dis:' , dis)
+                    print ('dis:' , dis)
             
             cv2.imshow("frame1", show)
             #跟踪更新box
             track_bbs_ids = mot_tracker.update(objtracks)
 
-           
+            '''
             #立体校正
             map1x, map1y, map2x, map2y, Q= stereomoulds.getRectifyTransform(height, width, camerasconfig)  # 获取畸变校正和立体校正的映射矩阵以及用于计算像素空间坐标的重投影矩阵
             iml_rectified, imr_rectified = stereomoulds.rectifyImage(iml, imr, map1x, map1y, map2x, map2y)
@@ -107,6 +108,8 @@ def DisplayandSolve():
             #trajt=file.write(point_3d)
             pickle.dump(point_3d,file)
             file.close()
+            '''
+
          if cv2.waitKey(1) & 0xFF == ord('q'):
                   break
      
